@@ -11,6 +11,7 @@ use similar::{ChangeTag, TextDiff};
 fn test_file(source_file: &Path, target_file: &Path) -> bool {
     let args = Cli::new();
     let mut logs = Vec::<Log>::new();
+    dbg!(source_file, target_file);
     let source_text = fs::read_to_string(source_file).unwrap();
     let target_text = fs::read_to_string(target_file).unwrap();
     let fmt_source_text =
@@ -44,41 +45,40 @@ fn test_file(source_file: &Path, target_file: &Path) -> bool {
     fmt_source_text == target_text
 }
 
-fn read_files_from_dir(dir: &str) -> Vec<String> {
-    fs::read_dir(dir)
-        .unwrap()
-        .map(|f| f.unwrap().file_name().into_string().unwrap())
-        .collect()
+fn read_files_from_dir(dir: &Path) -> Vec<PathBuf> {
+    dir.read_dir().unwrap().map(|f| f.unwrap().path()).collect()
 }
 
 #[test]
 fn test_source() {
-    let source_files = read_files_from_dir("./tests/source/");
-    let mut fail = false;
-    for file in source_files {
-        if !test_file(
-            &PathBuf::from(&format!("tests/source/{file}")),
-            &PathBuf::from(&format!("tests/target/{file}")),
-        ) {
-            fail = true;
-        }
+    let source_dir = PathBuf::from("./tests/source/");
+    let target_dir = PathBuf::from("./tests/target/");
+
+    let source_files = read_files_from_dir(&source_dir);
+    for source_file in source_files {
+        let mut target_file = target_dir.clone();
+        target_file.push(source_file.strip_prefix(&source_dir).unwrap());
+
+        assert!(
+            test_file(&source_file, &target_file),
+            "File: {:?} failed",
+            target_file
+        );
     }
-    assert!(!fail, "Some tests failed");
 }
 
 #[test]
 fn test_target() {
-    let target_files = read_files_from_dir("./tests/target/");
-    let mut fail = false;
-    for file in target_files {
-        if !test_file(
-            &PathBuf::from(&format!("tests/source/{file}")),
-            &PathBuf::from(&format!("tests/target/{file}")),
-        ) {
-            fail = true;
-        }
+    let target_dir = PathBuf::from("./tests/target/");
+
+    let target_files = read_files_from_dir(&target_dir);
+    for target_file in target_files {
+        assert!(
+            test_file(&target_file, &target_file),
+            "File: {:?} failed",
+            target_file
+        );
     }
-    assert!(!fail, "Some tests failed");
 }
 
 #[test]
