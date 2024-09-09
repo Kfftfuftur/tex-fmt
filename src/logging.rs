@@ -8,7 +8,7 @@ use log::Level::{Debug, Error, Info, Trace, Warn};
 use log::LevelFilter;
 use std::cmp::Reverse;
 use std::io::Write;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::time::Instant;
 
 /// Holds a log entry
@@ -19,7 +19,7 @@ pub struct Log {
     /// Time when the entry was logged
     pub time: Instant,
     /// File name associated with the entry
-    pub file: String,
+    pub file: PathBuf,
     /// Line number in the formatted file
     pub linum_new: Option<usize>,
     /// Line number in the original file
@@ -34,7 +34,7 @@ pub struct Log {
 fn record_log(
     logs: &mut Vec<Log>,
     level: Level,
-    file: &str,
+    file: &Path,
     linum_new: Option<usize>,
     linum_old: Option<usize>,
     line: Option<String>,
@@ -43,7 +43,7 @@ fn record_log(
     let log = Log {
         level,
         time: Instant::now(),
-        file: file.to_string(),
+        file: file.to_owned(),
         linum_new,
         linum_old,
         line,
@@ -56,7 +56,7 @@ fn record_log(
 pub fn record_file_log(
     logs: &mut Vec<Log>,
     level: Level,
-    file: &str,
+    file: &Path,
     message: &str,
 ) {
     record_log(logs, level, file, None, None, None, message);
@@ -66,7 +66,7 @@ pub fn record_file_log(
 pub fn record_line_log(
     logs: &mut Vec<Log>,
     level: Level,
-    file: &str,
+    file: &Path,
     linum_new: usize,
     linum_old: usize,
     line: &str,

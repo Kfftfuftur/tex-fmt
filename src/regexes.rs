@@ -18,7 +18,7 @@ pub const ENV_BEGIN: &str = "\\begin{";
 /// Match a LaTeX \end{...}
 pub const ENV_END: &str = "\\end{";
 /// Acceptable LaTeX file extensions
-pub const EXTENSIONS: [&str; 4] = [".tex", ".bib", ".sty", ".cls"];
+pub const EXTENSIONS: [&str; 4] = ["tex", "bib", "sty", "cls"];
 
 /// Names of LaTeX list environments
 const LISTS: [&str; 5] = [

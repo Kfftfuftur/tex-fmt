@@ -1,5 +1,7 @@
 //! Utilities for wrapping long lines
 
+use std::path::Path;
+
 use crate::comments::*;
 use crate::format::*;
 use crate::logging::*;
@@ -44,7 +46,7 @@ fn find_wrap_point(line: &str) -> Option<usize> {
 pub fn apply_wrap(
     line: &str,
     state: &State,
-    file: &str,
+    file: &Path,
     args: &Cli,
     logs: &mut Vec<Log>,
 ) -> Option<(String, String)> {

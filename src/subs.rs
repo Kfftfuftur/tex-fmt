@@ -1,5 +1,7 @@
 //! Utilities for performing text substitutions
 
+use std::path::Path;
+
 use crate::comments::*;
 use crate::format::*;
 use crate::ignore::*;
@@ -30,7 +32,7 @@ pub fn remove_trailing_spaces(text: &str) -> String {
 /// Ensure LaTeX environments begin on new lines
 pub fn environments_new_line(
     text: &str,
-    file: &str,
+    file: &Path,
     args: &Cli,
     logs: &mut Vec<Log>,
 ) -> String {

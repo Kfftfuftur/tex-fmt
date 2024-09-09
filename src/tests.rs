@@ -1,3 +1,6 @@
+use std::path::Path;
+use std::path::PathBuf;
+
 use crate::format_file;
 use crate::fs;
 use crate::logging::*;
@@ -5,7 +8,7 @@ use crate::Cli;
 use colored::Colorize;
 use similar::{ChangeTag, TextDiff};
 
-fn test_file(source_file: &str, target_file: &str) -> bool {
+fn test_file(source_file: &Path, target_file: &Path) -> bool {
     let args = Cli::new();
     let mut logs = Vec::<Log>::new();
     let source_text = fs::read_to_string(source_file).unwrap();
@@ -17,8 +20,8 @@ fn test_file(source_file: &str, target_file: &str) -> bool {
         println!(
             "{} {} -> {}",
             "fail".red().bold(),
-            source_file.yellow().bold(),
-            target_file.yellow().bold()
+            source_file.to_string_lossy().yellow().bold(),
+            target_file.to_string_lossy().bold()
         );
         let diff = TextDiff::from_lines(&fmt_source_text, &target_text);
         for change in diff.iter_all_changes() {
@@ -54,8 +57,8 @@ fn test_source() {
     let mut fail = false;
     for file in source_files {
         if !test_file(
-            &format!("tests/source/{file}"),
-            &format!("tests/target/{file}"),
+            &PathBuf::from(&format!("tests/source/{file}")),
+            &PathBuf::from(&format!("tests/target/{file}")),
         ) {
             fail = true;
         }
@@ -69,8 +72,8 @@ fn test_target() {
     let mut fail = false;
     for file in target_files {
         if !test_file(
-            &format!("tests/target/{file}"),
-            &format!("tests/target/{file}"),
+            &PathBuf::from(&format!("tests/source/{file}")),
+            &PathBuf::from(&format!("tests/target/{file}")),
         ) {
             fail = true;
         }
@@ -110,8 +113,8 @@ fn test_short() {
     let mut fail = false;
     for file in files {
         if !test_file(
-            &format!("tests/source/{file}"),
-            &format!("tests/target/{file}"),
+            &PathBuf::from(&format!("tests/source/{file}")),
+            &PathBuf::from(&format!("tests/target/{file}")),
         ) {
             fail = true;
         }

@@ -1,5 +1,7 @@
 //! Core methodology for formatting a file
 
+use std::path::Path;
+
 use crate::ignore::*;
 use crate::indent::*;
 use crate::logging::*;
@@ -13,7 +15,7 @@ use log::Level::{Info, Warn};
 /// Central function to format a file
 pub fn format_file(
     text: &str,
-    file: &str,
+    file: &Path,
     args: &Cli,
     logs: &mut Vec<Log>,
 ) -> String {

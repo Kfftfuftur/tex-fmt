@@ -1,5 +1,7 @@
 //! Utilities for ignoring verbatim environments
 
+use std::path::Path;
+
 use crate::format::*;
 use crate::logging::*;
 use crate::regexes::*;
@@ -29,7 +31,7 @@ pub fn get_verbatim(
     line: &str,
     state: &State,
     logs: &mut Vec<Log>,
-    file: &str,
+    file: &Path,
     warn: bool,
 ) -> Verbatim {
     let diff = get_verbatim_diff(line);

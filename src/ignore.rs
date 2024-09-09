@@ -1,5 +1,7 @@
 //! Utilities for ignoring/skipping source lines
 
+use std::path::Path;
+
 use crate::format::*;
 use crate::logging::*;
 use log::Level::Warn;
@@ -28,7 +30,7 @@ pub fn get_ignore(
     line: &str,
     state: &State,
     logs: &mut Vec<Log>,
-    file: &str,
+    file: &Path,
     warn: bool,
 ) -> Ignore {
     let skip = contains_ignore_skip(line);

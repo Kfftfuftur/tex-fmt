@@ -8,6 +8,7 @@ use crate::parse::*;
 use crate::regexes::*;
 use crate::verbatim::*;
 use core::cmp::max;
+use std::path::Path;
 use log::Level::{Trace, Warn};
 
 /// Opening delimiters
@@ -121,7 +122,7 @@ pub fn apply_indent(
     linum_old: usize,
     state: &State,
     logs: &mut Vec<Log>,
-    file: &str,
+    file: &Path,
     args: &Cli,
 ) -> (String, State) {
     let mut new_line = line.to_string();

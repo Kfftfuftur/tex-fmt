@@ -5,6 +5,8 @@ use crate::regexes::*;
 use clap::Parser;
 use log::Level::Error;
 use std::fs;
+use std::path::Path;
+use std::path::PathBuf;
 
 /// Command line arguments
 #[allow(missing_docs)]
@@ -25,7 +27,7 @@ pub struct Cli {
     #[arg(long, short, help = "Show trace log messages")]
     pub trace: bool,
     #[arg(required = true)]
-    pub files: Vec<String>,
+    pub files: Vec<PathBuf>,
 }
 
 impl Cli {
@@ -45,19 +47,22 @@ impl Cli {
             verbose: false,
             quiet: false,
             trace: false,
-            files: Vec::<String>::new(),
+            files: Vec::new(),
         }
     }
 }
 
 /// Add a missing extension and read the file
-pub fn read(file: &str, logs: &mut Vec<Log>) -> Option<(String, String)> {
+pub fn read(file: &Path, logs: &mut Vec<Log>) -> Option<(PathBuf, String)> {
     // check if file has an accepted extension
-    let has_ext = EXTENSIONS.iter().any(|e| file.ends_with(e));
+    let has_ext = file
+        .extension()
+        .is_some_and(|extension| EXTENSIONS.iter().any(|e| extension == *e));
     // if no valid extension, try adding .tex
-    let mut new_file = file.to_owned();
-    if !has_ext {
-        new_file.push_str(".tex");
+    let new_file = if has_ext {
+        file.to_owned()
+    } else {
+        file.to_owned().with_extension("tex")
     };
     if let Ok(text) = fs::read_to_string(&new_file) {
         return Some((new_file, text));
